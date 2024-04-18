@@ -1,3 +1,9 @@
+
+
+
+
+
+
 /**
 * Copyright (c) 2020 Bosch Sensortec GmbH. All rights reserved.
 *
@@ -114,6 +120,8 @@ int8_t bmp3_selftest_check(struct bmp3_dev *dev)
     /* Used to select the settings user needs to change */
     uint16_t settings_sel;
 
+    struct bmp3_settings settings;
+
     /* Reset the sensor */
     rslt = bmp3_soft_reset(dev);
     if (rslt == BMP3_SENSOR_OK)
@@ -133,21 +141,21 @@ int8_t bmp3_selftest_check(struct bmp3_dev *dev)
         if (rslt == BMP3_SENSOR_OK)
         {
             /* Select the pressure and temperature sensor to be enabled */
-            dev->settings.press_en = BMP3_ENABLE;
-            dev->settings.temp_en = BMP3_ENABLE;
+            settings.press_en = BMP3_ENABLE;
+            settings.temp_en = BMP3_ENABLE;
 
             /* Select the output data rate and over sampling settings for pressure and temperature */
-            dev->settings.odr_filter.press_os = BMP3_NO_OVERSAMPLING;
-            dev->settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
-            dev->settings.odr_filter.odr = BMP3_ODR_25_HZ;
+            settings.odr_filter.press_os = BMP3_NO_OVERSAMPLING;
+            settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
+            settings.odr_filter.odr = BMP3_ODR_25_HZ;
 
             /* Assign the settings which needs to be set in the sensor */
             settings_sel = BMP3_SEL_PRESS_EN | BMP3_SEL_TEMP_EN | BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR;
-            rslt = bmp3_set_sensor_settings(settings_sel, dev);
+            rslt = bmp3_set_sensor_settings(settings_sel, &settings, dev);
             if (rslt == BMP3_SENSOR_OK)
             {
-                dev->settings.op_mode = BMP3_MODE_NORMAL;
-                rslt = bmp3_set_op_mode(dev);
+                settings.op_mode = BMP3_MODE_NORMAL;
+                rslt = bmp3_set_op_mode(&settings, dev);
                 if (rslt == BMP3_SENSOR_OK)
                 {
                     dev->delay_us(40000, dev->intf_ptr);
@@ -168,8 +176,8 @@ int8_t bmp3_selftest_check(struct bmp3_dev *dev)
             /* Set the power mode to sleep mode */
             if (rslt == BMP3_SENSOR_OK)
             {
-                dev->settings.op_mode = BMP3_MODE_SLEEP;
-                rslt = bmp3_set_op_mode(dev);
+                settings.op_mode = BMP3_MODE_SLEEP;
+                rslt = bmp3_set_op_mode(&settings, dev);
             }
         }
     }
