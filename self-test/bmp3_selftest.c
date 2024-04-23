@@ -44,7 +44,7 @@
 
 #include "bmp3_selftest.h"
 
-#ifndef BMP3_DOUBLE_PRECISION_COMPENSATION
+#ifdef BMP3_FLOAT_COMPENSATION
 
 /* 0 degree celsius */
 #define BMP3_MIN_TEMPERATURE  INT16_C(0)
@@ -199,7 +199,7 @@ static int8_t analyze_sensor_data(const struct bmp3_data *sens_data)
 
     if (rslt == BMP3_SENSOR_OK)
     {
-        if ((sens_data->pressure / 100 < BMP3_MIN_PRESSURE) || (sens_data->pressure / 100 > BMP3_MAX_PRESSURE))
+        if ((sens_data->pressure < BMP3_MIN_PRESSURE) || (sens_data->pressure > BMP3_MAX_PRESSURE))
         {
             rslt = BMP3_IMPLAUSIBLE_PRESSURE;
         }
