@@ -73,6 +73,8 @@
 #define BMP3_MAX_PRESSURE     (1100.0f)
 #endif
 
+struct bmp3_data data = { 0 };
+
 /*!
  * @brief       Function to analyze the sensor data
  *
@@ -115,7 +117,8 @@ int8_t bmp3_selftest_check(struct bmp3_dev *dev)
     uint8_t sensor_comp;
 
     /* Variable used to store the compensated data */
-    struct bmp3_data data = { 0 };
+    data.pressure = 0;
+    data.temperature = 0;
 
     /* Used to select the settings user needs to change */
     uint16_t settings_sel;
@@ -267,4 +270,8 @@ static int8_t cal_crc(uint8_t seed, uint8_t data)
     return (int8_t)seed;
 }
 
+struct bmp3_data* get_bmp3_selftest_data(void)
+{
+  return &data;
+}
 /** @}*/

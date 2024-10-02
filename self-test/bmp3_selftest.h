@@ -79,6 +79,8 @@ extern "C" {
  */
 int8_t bmp3_selftest_check(struct bmp3_dev *dev);
 
+struct bmp3_data* get_bmp3_selftest_data(void);
+
 /*! CPP guard */
 #ifdef __cplusplus
 }
