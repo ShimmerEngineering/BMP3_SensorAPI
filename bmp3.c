@@ -2958,3 +2958,41 @@ static int8_t get_err_status(struct bmp3_status *status, struct bmp3_dev *dev)
 
     return rslt;
 }
+
+int8_t find_next_supported_odr(uint8_t start_odr, uint8_t *next_odr, const struct bmp3_settings *settings)
+{
+    int8_t rslt;
+    struct bmp3_settings tmp_settings;
+
+    if ((next_odr == NULL) || (settings == NULL))
+    {
+        return BMP3_E_NULL_PTR;
+    }
+
+    /* Copy settings so we can modify odr for testing */
+    tmp_settings = *settings;
+
+    /* Clamp start to valid range */
+    if (start_odr > BMP3_ODR_0_001_HZ)
+    {
+        start_odr = BMP3_ODR_0_001_HZ;
+    }
+
+    /* Try increasing ODR values until a valid combination is found */
+    for (uint8_t odr = start_odr; odr <= BMP3_ODR_0_001_HZ; odr++)
+    {
+        tmp_settings.odr_filter.odr = odr;
+
+        /* validate_osr_and_odr_settings is static in this file and verifies meas time vs ODR */
+        rslt = validate_osr_and_odr_settings(&tmp_settings);
+
+        if (rslt == BMP3_OK)
+        {
+            *next_odr = odr;
+            return BMP3_OK;
+        }
+    }
+
+    /* No valid ODR found */
+    return BMP3_E_INVALID_ODR_OSR_SETTINGS;
+}

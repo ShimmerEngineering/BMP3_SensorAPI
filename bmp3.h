@@ -545,6 +545,8 @@ int8_t bmp3_fifo_flush(struct bmp3_dev *dev);
  */
 int8_t bmp3_get_status(struct bmp3_status *status, struct bmp3_dev *dev);
 
+int8_t find_next_supported_odr(uint8_t start_odr, uint8_t *next_odr, const struct bmp3_settings *settings);
+
 #ifdef __cplusplus
 }
 #endif /* End of CPP guard */
